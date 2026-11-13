@@ -3,18 +3,52 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CheckCircle2, Compass, Layers, PlayCircle, Sliders, BarChart2, BookOpen } from "lucide-react";
+import {
+  CheckCircle2,
+  AlertCircle,
+  Compass,
+  Layers,
+  PlayCircle,
+  Sliders,
+  BarChart2,
+  BookOpen,
+} from "lucide-react";
 import LoopLabLogo from "./LoopLabLogo";
+
+interface SystemStatusResponse {
+  llm: {
+    configured: boolean;
+    model: string;
+    displayName: string;
+    status: string;
+  };
+  camunda: {
+    installed: boolean;
+    path: string | null;
+    status: string;
+  };
+  researchApi: {
+    connected: boolean;
+    status: string;
+  };
+}
 
 export default function Header() {
   const pathname = usePathname();
-  const [camundaStatus, setCamundaStatus] = useState<any>(null);
+  const [systemStatus, setSystemStatus] = useState<SystemStatusResponse | null>(null);
 
   useEffect(() => {
-    fetch("/api/camunda/status")
+    fetch("/api/system/status")
       .then((res) => res.json())
-      .then((data) => setCamundaStatus(data))
-      .catch(() => {});
+      .then((data: SystemStatusResponse) => setSystemStatus(data))
+      .catch(() => {
+        // Fallback default if status endpoint fails
+        setSystemStatus({
+          llm: { configured: false, model: "gemini-2.5-flash", displayName: "Gemini 2.5 Flash", status: "unconfigured" },
+          camunda: { installed: false, path: null, status: "not_installed" },
+          researchApi: { connected: false, status: "offline" },
+        });
+      });
   }, []);
 
   const navItems = [
@@ -45,19 +79,47 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* System Environment Indicators */}
+          {/* System Environment Indicators (Dynamic) */}
           <div className="hidden lg:flex items-center space-x-3 text-xs">
-            <div className="flex items-center space-x-1.5 px-2.5 py-1 bg-amber-50/80 border border-amber-200 rounded-full text-amber-800 shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-              <span className="font-medium">Gemini: 2.5 Flash</span>
-            </div>
+            {/* Dynamic LLM Status Chip */}
+            {systemStatus?.llm?.configured ? (
+              <div
+                className="flex items-center space-x-1.5 px-2.5 py-1 bg-amber-50/80 border border-amber-200 rounded-full text-amber-800 shadow-xs"
+                title={`Active LLM Model: ${systemStatus.llm.model} (Ready)`}
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="font-medium">
+                  Gemini: {systemStatus.llm.model === "gemini-2.5-flash" ? "2.5 Flash" : systemStatus.llm.model}
+                </span>
+              </div>
+            ) : (
+              <div
+                className="flex items-center space-x-1.5 px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-full text-slate-600 shadow-xs"
+                title="Gemini API key is not configured in web/.env"
+              >
+                <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
+                <span className="font-medium">Gemini: Key Not Set</span>
+              </div>
+            )}
 
-            <div className="flex items-center space-x-1.5 px-2.5 py-1 bg-emerald-50/80 border border-emerald-200 rounded-full text-emerald-800 shadow-xs">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="font-medium">
-                Camunda Modeler: {camundaStatus?.modelerInstalled ? "Installed" : "Detected"}
-              </span>
-            </div>
+            {/* Dynamic Camunda Modeler Status Chip */}
+            {systemStatus?.camunda?.installed ? (
+              <div
+                className="flex items-center space-x-1.5 px-2.5 py-1 bg-emerald-50/80 border border-emerald-200 rounded-full text-emerald-800 shadow-xs"
+                title={`Camunda Modeler located at: ${systemStatus.camunda.path}`}
+              >
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="font-medium">Camunda Modeler: Installed</span>
+              </div>
+            ) : (
+              <div
+                className="flex items-center space-x-1.5 px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-full text-slate-500 shadow-xs"
+                title="Camunda Modeler executable not detected in standard installation paths"
+              >
+                <span className="w-2 h-2 rounded-full bg-slate-400" />
+                <span className="font-medium">Camunda Modeler: Not Installed</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -90,4 +152,3 @@ export default function Header() {
     </header>
   );
 }
-

@@ -117,6 +117,7 @@ The script verifies exact equality between the web manifest and the repository r
 
 ## Documentation Index:
 
+- [Usage.md](Usage.md): Stepwise user guide covering process modeling, simulation, policy optimization, and research auditing.
 - [InstallationAndSetup.md](InstallationAndSetup.md): Prerequisites, automated setup, and troubleshooting manual.
 - [CodeBaseIndex.md](CodeBaseIndex.md): Directory layout, contract interfaces, and architectural layer guide.
 - [Visuals.md](Visuals.md): Visual walkthrough, branding palette, and responsive viewport captures.

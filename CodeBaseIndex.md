@@ -24,6 +24,7 @@ LoopLabProject/
 ├── start.bat                    # One click dual service launcher batch script
 ├── start.ps1                    # One click dual service launcher PowerShell script
 ├── InstallationAndSetup.md      # Comprehensive setup and troubleshooting manual
+├── Usage.md                     # Stepwise user guide for all platform workflows
 ├── CodeBaseIndex.md             # Architecture overview and component directory
 ├── README.md                    # Project motivation, domain specifications, and quickstart
 ├── Visuals.md                   # Visual architecture, design tokens, and screenshot gallery

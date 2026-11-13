@@ -167,3 +167,7 @@ All seven automated tests pass, confirming overview card rendering, horizontal B
 - Port 8000 already in use: Check whether uvicorn is running in another terminal and restart it.
 - Python research service not reachable: Ensure `python main.py` is running on port 8000 before clicking workload simulation in the browser.
 - Gemini API quota limit: Verify the API key status in Google AI Studio if live generation calls encounter rate limits.
+
+## Next Steps:
+
+For comprehensive instructions on process modeling, token simulations, intervention policy optimization, and research result auditing, proceed to [Usage.md](Usage.md).
