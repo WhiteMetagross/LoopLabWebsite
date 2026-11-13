@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="Definitions_1"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_BPISim" name="Incomplete Loan Review" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_1" name="Start" />
+    <bpmn:exclusiveGateway id="Gateway_LoopEntry_review_repeat" name="Loop Entry" />
+    <bpmn:serviceTask id="Task_marker_task" name="Record Incomplete Review Marker" />
+    <bpmn:exclusiveGateway id="Gateway_Split_routing_choice" name="Assign Reviewer at Marker" />
+    <bpmn:exclusiveGateway id="Gateway_Merge_routing_choice" name="Merge" />
+    <bpmn:userTask id="Task_t_std_rev" name="Standard Review Handling" />
+    <bpmn:userTask id="Task_t_spec_rev" name="Specialist Review Handling" />
+    <bpmn:userTask id="Task_validate_task" name="Validate Application File" />
+    <bpmn:exclusiveGateway id="Gateway_RepeatCheck_review_repeat" name="Incomplete Review Loop" />
+    <bpmn:endEvent id="EndEvent_Completed" name="Completed" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Gateway_LoopEntry_review_repeat" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Gateway_LoopEntry_review_repeat" targetRef="Task_marker_task" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_marker_task" targetRef="Gateway_Split_routing_choice" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Gateway_Split_routing_choice" targetRef="Task_t_std_rev" name="Standard Reviewer" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_t_std_rev" targetRef="Gateway_Merge_routing_choice" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Gateway_Split_routing_choice" targetRef="Task_t_spec_rev" name="Specialist Reviewer" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Task_t_spec_rev" targetRef="Gateway_Merge_routing_choice" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Gateway_Merge_routing_choice" targetRef="Task_validate_task" />
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Task_validate_task" targetRef="Gateway_RepeatCheck_review_repeat" />
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Gateway_RepeatCheck_review_repeat" targetRef="Gateway_LoopEntry_review_repeat" name="Repeat">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">result == &quot;incomplete&quot;</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="Gateway_RepeatCheck_review_repeat" targetRef="EndEvent_Completed" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_BPISim">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_BPISim" bpmnElement="Process_BPISim">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="122" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_LoopEntry_review_repeat_di" bpmnElement="Gateway_LoopEntry_review_repeat" isMarkerVisible="true">
+        <dc:Bounds x="275" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_marker_task_di" bpmnElement="Task_marker_task">
+        <dc:Bounds x="410" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Split_routing_choice_di" bpmnElement="Gateway_Split_routing_choice" isMarkerVisible="true">
+        <dc:Bounds x="595" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Merge_routing_choice_di" bpmnElement="Gateway_Merge_routing_choice" isMarkerVisible="true">
+        <dc:Bounds x="915" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_t_std_rev_di" bpmnElement="Task_t_std_rev">
+        <dc:Bounds x="730" y="20" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_t_spec_rev_di" bpmnElement="Task_t_spec_rev">
+        <dc:Bounds x="730" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_validate_task_di" bpmnElement="Task_validate_task">
+        <dc:Bounds x="1050" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_RepeatCheck_review_repeat_di" bpmnElement="Gateway_RepeatCheck_review_repeat" isMarkerVisible="true">
+        <dc:Bounds x="1235" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Completed_di" bpmnElement="EndEvent_Completed">
+        <dc:Bounds x="1402" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="158" y="180" />
+        <di:waypoint x="275" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="325" y="180" />
+        <di:waypoint x="410" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="510" y="180" />
+        <di:waypoint x="595" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="645" y="180" />
+        <di:waypoint x="665" y="180" />
+        <di:waypoint x="665" y="60" />
+        <di:waypoint x="730" y="60" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="830" y="60" />
+        <di:waypoint x="850" y="60" />
+        <di:waypoint x="850" y="180" />
+        <di:waypoint x="915" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="645" y="180" />
+        <di:waypoint x="665" y="180" />
+        <di:waypoint x="665" y="300" />
+        <di:waypoint x="730" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="830" y="300" />
+        <di:waypoint x="850" y="300" />
+        <di:waypoint x="850" y="180" />
+        <di:waypoint x="915" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="965" y="180" />
+        <di:waypoint x="1050" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="1150" y="180" />
+        <di:waypoint x="1235" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
+        <di:waypoint x="1260" y="205" />
+        <di:waypoint x="1260" y="420" />
+        <di:waypoint x="300" y="420" />
+        <di:waypoint x="300" y="205" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="1285" y="180" />
+        <di:waypoint x="1402" y="180" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

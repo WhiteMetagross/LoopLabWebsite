@@ -1,0 +1,661 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedTime": "2026-11-12T19:56:47.881260+00:00",
+  "sourceRuns": [
+    "runs/paper_suite_full_20261104",
+    "runs/regression_ablation_full_20261112"
+  ],
+  "sourceHashes": {
+    "paper_suite_full_20261104": "de426dd1aac30a8e175b5e5a421ab9160ba8789681b7d275fbb2e6985cdb202e",
+    "regression_ablation_full_20261112": "92e7725c7c35d94c4f2f3a9b895713877167a8f5f9a2960ab4a6fe96e6b826d1",
+    "regression_paper_artifacts": "69f2208c32663c2782b5edb056906703ce86a857399abaa5c629e45679f7a984"
+  },
+  "seeds": [
+    1154929522,
+    2035845825,
+    1193624495
+  ],
+  "focusedStudies": {
+    "SimClaims": {
+      "domain": "insurance",
+      "control": {
+        "id": "full_ML",
+        "label": "Regression",
+        "description": "Task matched supervised regression predictor with static allocation.",
+        "mean": 55.84509523950083
+      },
+      "candidate": {
+        "id": "full",
+        "label": "Regression with episodic policy search",
+        "description": "Validation selected regression forecaster with episodic policy search and congestion state.",
+        "mean": 49.56334418558445
+      },
+      "primaryMetric": {
+        "id": "queue",
+        "label": "Mean queue time",
+        "unit": "minutes",
+        "betterDirection": "lower",
+        "controlMean": 55.84509523950083,
+        "candidateMean": 49.56334418558445,
+        "signedGain": 6.281751053916433,
+        "percentageGain": 11.248527783820697,
+        "pairedCi95": [
+          5.038696731939024,
+          7.525928821315388
+        ]
+      },
+      "secondaryMetric": {
+        "id": "extra_attempts",
+        "label": "Extra attempts per 100 claims",
+        "unit": "attempts/100",
+        "betterDirection": "lower",
+        "change": 0.32226562499999983,
+        "pairedCi95": [
+          0.21592881944444445,
+          0.42100694444444414
+        ],
+        "limit": 0.5,
+        "limitStatus": "passes",
+        "limitDescription": "Adds 0.322 attempts per 100 claims, remaining strictly below the 0.50 threshold."
+      },
+      "evaluationCounts": {
+        "seeds": 3,
+        "workloadsPerSeed": 384,
+        "claimsPerWorkload": 250
+      },
+      "selectionStatus": "selected",
+      "findingSummary": "Reduces mean queue time from 55.85 to 49.56 minutes per claim (11.25 percent saving). Adds 0.322 document request attempts per 100 claims, below the declared limit."
+    },
+    "BPISim": {
+      "domain": "bpisim",
+      "control": {
+        "id": "marker_ML",
+        "label": "Regression",
+        "description": "Validation selected regression predictor acting at review marker.",
+        "mean": 8974.010476897623
+      },
+      "candidate": {
+        "id": "marker_forced",
+        "label": "Forced episodic policy search",
+        "description": "Forced episodic controller acting at review marker.",
+        "mean": 8963.692008961194
+      },
+      "primaryMetric": {
+        "id": "elapsed",
+        "label": "Total elapsed time",
+        "unit": "minutes",
+        "betterDirection": "lower",
+        "controlMean": 8974.010476897623,
+        "candidateMean": 8963.692008961194,
+        "signedGain": 10.31846793642419,
+        "percentageGain": 0.1149816791833812,
+        "pairedCi95": [
+          -3.545999379911408,
+          28.656506217373803
+        ]
+      },
+      "secondaryMetric": {
+        "id": "extra_attempts",
+        "label": "Extra attempts per 100 applications",
+        "unit": "attempts/100",
+        "betterDirection": "lower",
+        "change": 0.13997395833333345,
+        "pairedCi95": [
+          -0.022786458333333308,
+          0.34345160590277785
+        ],
+        "limit": 0.5,
+        "limitStatus": "inconclusive",
+        "limitDescription": "Avoids 0.140 attempts per 100 applications, but interval crosses zero."
+      },
+      "evaluationCounts": {
+        "seeds": 3,
+        "workloadsPerSeed": 384,
+        "applicationsPerWorkload": 250
+      },
+      "selectionStatus": "forced_sensitivity",
+      "findingSummary": "Total elapsed time changes from 8,974.01 to 8,963.69 minutes. Saving is 10.32 minutes with interval crossing zero. Validation retains Regression across all seeds."
+    },
+    "SimFactory": {
+      "domain": "manufacturing",
+      "control": {
+        "id": "ML",
+        "label": "Regression",
+        "description": "Standard supervised regression router.",
+        "mean": 688.8801225532285
+      },
+      "candidate": {
+        "id": "safe_075",
+        "label": "Regression with safety constrained search",
+        "description": "Regression forecaster with accrued waiting state and safety penalty.",
+        "mean": 638.5865768286577
+      },
+      "primaryMetric": {
+        "id": "tail_queue",
+        "label": "Tail queue wait (8 longest in 80 jobs)",
+        "unit": "minutes",
+        "betterDirection": "lower",
+        "controlMean": 688.8801225532285,
+        "candidateMean": 638.5865768286577,
+        "signedGain": 50.293545724570265,
+        "percentageGain": 7.300768896940365,
+        "pairedCi95": [
+          33.69039116629779,
+          68.45479302629897
+        ]
+      },
+      "secondaryMetric": {
+        "id": "extra_repairs",
+        "label": "Extra repairs per 100 jobs",
+        "unit": "repairs/100",
+        "betterDirection": "lower",
+        "change": 0.40537498290112467,
+        "pairedCi95": [
+          0.26692708333333326,
+          0.5507726000472938
+        ],
+        "limit": 0.5,
+        "limitStatus": "unresolved",
+        "limitDescription": "Mean is 0.405 which meets 0.50, but upper bound 0.551 exceeds threshold."
+      },
+      "evaluationCounts": {
+        "seeds": 3,
+        "workloadsPerSeed": 384,
+        "jobsPerWorkload": 80
+      },
+      "selectionStatus": "selected",
+      "findingSummary": "Reduces tail queue time from 688.88 to 638.59 minutes (7.30 percent saving). Extra repairs increase by 0.405 per 100 jobs, with upper bound exceeding strict 0.50 limit."
+    },
+    "SimBank": {
+      "domain": "simbank",
+      "control": {
+        "id": "Regression_DP_500",
+        "label": "Regression based dynamic planner",
+        "description": "Dynamic program based on task matched regression refusal predictions.",
+        "mean": 25.03666666666667
+      },
+      "candidate": {
+        "id": "CQL_both",
+        "label": "Regression informed CQL",
+        "description": "Conservative Q learning with regression features and process penalties for refusal and cancellation.",
+        "mean": 19.29
+      },
+      "primaryMetric": {
+        "id": "refusals",
+        "label": "Refusals per 100 negotiations",
+        "unit": "refusals/100",
+        "betterDirection": "lower",
+        "controlMean": 25.03666666666667,
+        "candidateMean": 19.29,
+        "signedGain": 5.746666666666666,
+        "percentageGain": 22.953002263347102,
+        "pairedCi95": [
+          4.817202705672832,
+          6.852684318828133
+        ]
+      },
+      "secondaryMetric": {
+        "id": "profit",
+        "label": "Native profit per case",
+        "unit": "profit units",
+        "betterDirection": "higher",
+        "change": 6.922765680397902,
+        "pairedCi95": [
+          -67.93004796995518,
+          93.56530653266758
+        ],
+        "limit": 0.0,
+        "limitStatus": "inconclusive",
+        "limitDescription": "Profit change is 6.92 units with interval spanning -67.93 to 93.57. Does not establish profit gain or loss."
+      },
+      "evaluationCounts": {
+        "seeds": 3,
+        "casesPerSeed": 30000
+      },
+      "selectionStatus": "selected_with_tradeoff",
+      "findingSummary": "Refusals decrease from 25.04 to 19.29 per 100 cases (22.95 percent reduction). Profit change is 6.92 units with 95 percent interval spanning -67.93 to 93.57."
+    }
+  },
+  "ablations": [
+    {
+      "domain": "SimClaims",
+      "question": "Does search add to equal static tuning?",
+      "comparison": "Full vs. equal static",
+      "change": {
+        "value": 0.3385746322674292,
+        "ci95": [
+          -0.3301096519472341,
+          0.953231732054523
+        ]
+      },
+      "unit": "queue min saved",
+      "conclusion": "No confirmed residual gain."
+    },
+    {
+      "domain": "SimClaims",
+      "question": "Is congestion state useful?",
+      "comparison": "Full vs. no congestion",
+      "change": {
+        "value": 11.005293386573781,
+        "ci95": [
+          9.972265731047601,
+          11.995470870180627
+        ]
+      },
+      "unit": "queue min saved",
+      "conclusion": "Congestion is essential."
+    },
+    {
+      "domain": "SimClaims",
+      "question": "Do forecast residuals help?",
+      "comparison": "Full vs. no forecast",
+      "change": {
+        "value": -0.6489345975366656,
+        "ci95": [
+          -1.2603848896787373,
+          -0.1137813850913071
+        ]
+      },
+      "unit": "queue min saved",
+      "conclusion": "Forecast residuals reduce queue performance."
+    },
+    {
+      "domain": "SimClaims",
+      "question": "Do later repeat decisions help?",
+      "comparison": "Full vs. first only",
+      "change": {
+        "value": -0.6169883311653549,
+        "ci95": [
+          -1.3863931041719062,
+          -0.058407243274807924
+        ]
+      },
+      "unit": "queue min saved",
+      "conclusion": "First only routing is better."
+    },
+    {
+      "domain": "BPISim",
+      "question": "Does validation select search?",
+      "comparison": "Selected vs. Regression",
+      "change": {
+        "value": -0.0,
+        "ci95": [
+          -0.0,
+          -0.0
+        ]
+      },
+      "unit": "elapsed min saved",
+      "conclusion": "Regression is selected for all seeds."
+    },
+    {
+      "domain": "BPISim",
+      "question": "Can forced search improve elapsed time?",
+      "comparison": "Forced vs. Regression",
+      "change": {
+        "value": 10.31846793642419,
+        "ci95": [
+          -3.545999379911408,
+          28.656506217373803
+        ]
+      },
+      "unit": "elapsed min saved",
+      "conclusion": "The gain is not confirmed."
+    },
+    {
+      "domain": "BPISim",
+      "question": "How much elapsed time can review affect?",
+      "comparison": "Review queue and work share",
+      "change": {
+        "value": 0.6786667140476492,
+        "ci95": [
+          0.6786667140476492,
+          0.6786667140476492
+        ]
+      },
+      "unit": "percent of elapsed time",
+      "conclusion": "Most elapsed time is outside the decision."
+    },
+    {
+      "domain": "SimFactory",
+      "question": "Does accrued waiting state help?",
+      "comparison": "Safe vs. no accrued wait",
+      "change": {
+        "value": 8.428624522002115,
+        "ci95": [
+          1.3511744812351065,
+          15.999449685883905
+        ]
+      },
+      "unit": "tail min saved",
+      "conclusion": "Accrued wait is useful."
+    },
+    {
+      "domain": "SimFactory",
+      "question": "Does the tail reward beat mean queue reward?",
+      "comparison": "Tail vs. mean queue objective",
+      "change": {
+        "value": -7.097861796642836,
+        "ci95": [
+          -17.671086096966793,
+          4.963824765904508
+        ]
+      },
+      "unit": "tail min saved",
+      "conclusion": "No confirmed advantage."
+    },
+    {
+      "domain": "SimFactory",
+      "question": "Does the gain survive burst arrivals?",
+      "comparison": "Safe vs. Regression under bursts",
+      "change": {
+        "value": 34.091565650834546,
+        "ci95": [
+          20.88842670317002,
+          48.942283482192764
+        ]
+      },
+      "unit": "tail min saved (3.17%)",
+      "conclusion": "The gain remains below the 5% target."
+    },
+    {
+      "domain": "SimBank",
+      "question": "Do process penalties reduce refusals?",
+      "comparison": "Both penalties vs. profit only",
+      "change": {
+        "value": 2.7933333333333334,
+        "ci95": [
+          2.2189897707332027,
+          3.5077332094701568
+        ]
+      },
+      "secondaryChange": {
+        "value": -5.704094317912407,
+        "ci95": [
+          -26.689393966781882,
+          13.29964187674722
+        ]
+      },
+      "unit": "refusals avoided/100",
+      "conclusion": "Avoids 2.79 refusals per 100 cases with -5.70 profit change."
+    },
+    {
+      "domain": "SimBank",
+      "question": "Do forecast features help CQL?",
+      "comparison": "Full vs. history only CQL",
+      "change": {
+        "value": 71.30266974970601,
+        "ci95": [
+          40.63009480138502,
+          100.20373523842184
+        ]
+      },
+      "secondaryChange": {
+        "value": 3.1966666666666663,
+        "ci95": [
+          1.942618744991274,
+          4.210975615903694
+        ]
+      },
+      "unit": "profit change",
+      "conclusion": "Adds 71.30 profit units and avoids 3.20 refusals per 100 cases."
+    },
+    {
+      "domain": "SimBank",
+      "question": "Does ensembling improve fitted Q?",
+      "comparison": "Ensemble vs. single model",
+      "change": {
+        "value": 7.921222487358672,
+        "ci95": [
+          -4.752665305232558,
+          20.420176776138753
+        ]
+      },
+      "unit": "profit change",
+      "conclusion": "The gain is not confirmed."
+    },
+    {
+      "domain": "SimBank",
+      "question": "Does biased logging change the policy?",
+      "comparison": "Biased vs. random logs",
+      "change": {
+        "value": -93.77201840955281,
+        "ci95": [
+          -152.3025585505405,
+          -6.268515589297667
+        ]
+      },
+      "unit": "profit change",
+      "conclusion": "Biased logs reduce profit."
+    }
+  ],
+  "commonBenchmark": {
+    "insurance": {
+      "reference": {
+        "label": "FIFO",
+        "mean": 122.93431210273063,
+        "sd": 3.075375239514018
+      },
+      "ml": {
+        "Regression": {
+          "mean": 55.6031145070948,
+          "sd": 1.2852175424929848
+        },
+        "RandomForest": {
+          "mean": 55.700421724319504,
+          "sd": 2.915695184155037
+        },
+        "CatBoost": {
+          "mean": 55.92305327748192,
+          "sd": 2.914947703590296
+        },
+        "XGBoost": {
+          "mean": 56.39753729301574,
+          "sd": 3.5433969556256
+        }
+      },
+      "rl": {
+        "TabularQ": {
+          "label": "Q learning",
+          "mean": 82.64888398552405,
+          "sd": 3.7079831384458966
+        },
+        "FittedQ": {
+          "label": "Fitted Q",
+          "mean": 85.38498157011065,
+          "sd": 11.210684155536686
+        },
+        "CQL_0.1": {
+          "label": "CQL alpha 0.1",
+          "mean": 75.07120570298129,
+          "sd": 11.57047012054077
+        },
+        "CQL_0.5": {
+          "label": "CQL alpha 0.5",
+          "mean": 80.7163700114286,
+          "sd": 28.622065779709803
+        },
+        "PPO": {
+          "label": "PPO",
+          "mean": 95.0862321431088,
+          "sd": 29.845944459570845
+        }
+      }
+    },
+    "bpisim": {
+      "reference": {
+        "label": "FIFO",
+        "mean": 55.935866755733,
+        "sd": 0.48542794671767586
+      },
+      "ml": {
+        "Regression": {
+          "mean": 35.21146265069107,
+          "sd": 0.9547532965936962
+        },
+        "RandomForest": {
+          "mean": 36.76297093208762,
+          "sd": 0.9064480680691358
+        },
+        "CatBoost": {
+          "mean": 36.70983418765061,
+          "sd": 0.8228481628514447
+        },
+        "XGBoost": {
+          "mean": 36.60446113098654,
+          "sd": 1.0400433860923117
+        }
+      },
+      "rl": {
+        "TabularQ": {
+          "label": "Q learning",
+          "mean": 41.66036001340559,
+          "sd": 0.8369840168627879
+        },
+        "FittedQ": {
+          "label": "Fitted Q",
+          "mean": 40.90453045088642,
+          "sd": 1.8802844840915725
+        },
+        "CQL_0.1": {
+          "label": "CQL alpha 0.1",
+          "mean": 40.037411910504204,
+          "sd": 2.549618869139108
+        },
+        "CQL_0.5": {
+          "label": "CQL alpha 0.5",
+          "mean": 40.86594530197075,
+          "sd": 1.2328667234666806
+        },
+        "PPO": {
+          "label": "PPO",
+          "mean": 42.29155677637569,
+          "sd": 3.47080093138098
+        }
+      }
+    },
+    "manufacturing": {
+      "reference": {
+        "label": "FIFO",
+        "mean": 1051.034341486887,
+        "sd": 25.400689272794178
+      },
+      "ml": {
+        "Regression": {
+          "mean": 714.3622849378061,
+          "sd": 19.310256825324714
+        },
+        "RandomForest": {
+          "mean": 722.172239858749,
+          "sd": 24.791549176455323
+        },
+        "CatBoost": {
+          "mean": 722.2134676857653,
+          "sd": 25.682831410640564
+        },
+        "XGBoost": {
+          "mean": 724.2023791715627,
+          "sd": 30.697364862889042
+        }
+      },
+      "rl": {
+        "TabularQ": {
+          "label": "Q learning",
+          "mean": 906.4980014381769,
+          "sd": 53.6476983495225
+        },
+        "FittedQ": {
+          "label": "Fitted Q",
+          "mean": 967.2736521013189,
+          "sd": 48.68082936566878
+        },
+        "CQL_0.1": {
+          "label": "CQL alpha 0.1",
+          "mean": 942.4895196126732,
+          "sd": 152.41893039439324
+        },
+        "CQL_0.5": {
+          "label": "CQL alpha 0.5",
+          "mean": 919.947348014112,
+          "sd": 242.17399997244235
+        },
+        "PPO": {
+          "label": "PPO",
+          "mean": 1153.9292108280004,
+          "sd": 29.77032483962487
+        }
+      }
+    },
+    "simbank": {
+      "reference": {
+        "label": "Bank rule",
+        "profit_mean": 3378.4865888767326,
+        "profit_sd": 45.391659303902834,
+        "refusals_mean": 15.902222222222221,
+        "refusals_sd": 0.12167047178220265
+      },
+      "ml": {
+        "Regression": {
+          "profit_mean": 3780.425273354207,
+          "profit_sd": 82.90121349203231,
+          "refusals_mean": 24.28666666666667,
+          "refusals_sd": 2.948136888122923
+        },
+        "RandomForest": {
+          "profit_mean": 3666.84838484929,
+          "profit_sd": 60.23586839640846,
+          "refusals_mean": 26.78333333333334,
+          "refusals_sd": 2.2088785490480114
+        },
+        "CatBoost": {
+          "profit_mean": 3759.0137272260745,
+          "profit_sd": 109.15496517958134,
+          "refusals_mean": 23.263333333333332,
+          "refusals_sd": 3.327242769087407
+        },
+        "XGBoost": {
+          "profit_mean": 3755.511608144358,
+          "profit_sd": 98.82326795076037,
+          "refusals_mean": 23.627777777777776,
+          "refusals_sd": 2.410980283188962
+        }
+      },
+      "rl": {
+        "TabularQ": {
+          "label": "Q learning",
+          "profit_mean": 3557.007023063274,
+          "profit_sd": 129.44151833188243,
+          "refusals_mean": 14.780000000000001,
+          "refusals_sd": 0.4200925823884279
+        },
+        "FittedQ": {
+          "label": "Fitted Q",
+          "profit_mean": 3778.1595576106433,
+          "profit_sd": 79.37950123093795,
+          "refusals_mean": 20.534444444444446,
+          "refusals_sd": 1.4842519003537458
+        },
+        "CQL_0.1": {
+          "label": "CQL alpha 0.1",
+          "profit_mean": 3761.891745212644,
+          "profit_sd": 47.04480276083906,
+          "refusals_mean": 17.94111111111111,
+          "refusals_sd": 2.0444432367146192
+        },
+        "CQL_0.5": {
+          "label": "CQL alpha 0.5",
+          "profit_mean": 3735.765946107928,
+          "profit_sd": 60.492232196921975,
+          "refusals_mean": 16.43111111111111,
+          "refusals_sd": 1.7267739134432591
+        },
+        "PPO": {
+          "label": "PPO",
+          "profit_mean": 3496.4138869697886,
+          "profit_sd": 57.440058288107075,
+          "refusals_mean": 33.97222222222223,
+          "refusals_sd": 0.24350070347453184
+        }
+      }
+    }
+  }
+}

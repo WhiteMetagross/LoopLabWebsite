@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="Definitions_1"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_SimBank" name="Repeated Loan Offers" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_1" name="Start" />
+    <bpmn:exclusiveGateway id="Gateway_LoopEntry_negotiate_loop" name="Loop Entry" />
+    <bpmn:serviceTask id="Task_calc_rate" name="Calculate Offer Rate (5 to 9 percent)" />
+    <bpmn:userTask id="Task_present_offer" name="Present Rate to Customer" />
+    <bpmn:userTask id="Task_eval_response" name="Evaluate Customer Response" />
+    <bpmn:exclusiveGateway id="Gateway_RepeatCheck_negotiate_loop" name="Offer Negotiation Loop" />
+    <bpmn:serviceTask id="Task_outcome_task" name="Finalize Negotiation Outcome" />
+    <bpmn:endEvent id="EndEvent_Completed" name="Completed" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Gateway_LoopEntry_negotiate_loop" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Gateway_LoopEntry_negotiate_loop" targetRef="Task_calc_rate" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_calc_rate" targetRef="Task_present_offer" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_present_offer" targetRef="Task_eval_response" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_eval_response" targetRef="Gateway_RepeatCheck_negotiate_loop" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Gateway_RepeatCheck_negotiate_loop" targetRef="Gateway_LoopEntry_negotiate_loop" name="Repeat">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">customerAccepted == false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Gateway_RepeatCheck_negotiate_loop" targetRef="Task_outcome_task" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Task_outcome_task" targetRef="EndEvent_Completed" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_SimBank">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_SimBank" bpmnElement="Process_SimBank">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="122" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_LoopEntry_negotiate_loop_di" bpmnElement="Gateway_LoopEntry_negotiate_loop" isMarkerVisible="true">
+        <dc:Bounds x="275" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_calc_rate_di" bpmnElement="Task_calc_rate">
+        <dc:Bounds x="410" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_present_offer_di" bpmnElement="Task_present_offer">
+        <dc:Bounds x="570" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_eval_response_di" bpmnElement="Task_eval_response">
+        <dc:Bounds x="730" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_RepeatCheck_negotiate_loop_di" bpmnElement="Gateway_RepeatCheck_negotiate_loop" isMarkerVisible="true">
+        <dc:Bounds x="915" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_outcome_task_di" bpmnElement="Task_outcome_task">
+        <dc:Bounds x="1050" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Completed_di" bpmnElement="EndEvent_Completed">
+        <dc:Bounds x="1242" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="158" y="180" />
+        <di:waypoint x="275" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="325" y="180" />
+        <di:waypoint x="410" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="510" y="180" />
+        <di:waypoint x="570" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="670" y="180" />
+        <di:waypoint x="730" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="830" y="180" />
+        <di:waypoint x="915" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="940" y="205" />
+        <di:waypoint x="940" y="300" />
+        <di:waypoint x="300" y="300" />
+        <di:waypoint x="300" y="205" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="965" y="180" />
+        <di:waypoint x="1050" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="1150" y="180" />
+        <di:waypoint x="1242" y="180" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

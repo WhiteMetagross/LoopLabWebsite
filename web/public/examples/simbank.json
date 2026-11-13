@@ -1,0 +1,121 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "ready",
+  "title": "Repeated Loan Offers",
+  "description": "A customer negotiation where the bank selects interest offer rates with bounded attempts.",
+  "profile": "standard_looplab_v1",
+  "processId": "Process_SimBank",
+  "rootBlockId": "root_seq",
+  "roles": [
+    "Loan Officer",
+    "Customer"
+  ],
+  "variables": [
+    {
+      "name": "offerCount",
+      "type": "number",
+      "initialValue": 1
+    },
+    {
+      "name": "offerRate",
+      "type": "number",
+      "initialValue": 7
+    },
+    {
+      "name": "customerAccepted",
+      "type": "boolean",
+      "initialValue": false
+    }
+  ],
+  "blocks": {
+    "root_seq": {
+      "id": "root_seq",
+      "type": "sequence",
+      "name": "Main Sequence",
+      "orderedChildren": [
+        "negotiate_loop",
+        "outcome_task"
+      ]
+    },
+    "negotiate_loop": {
+      "id": "negotiate_loop",
+      "type": "repeat",
+      "name": "Offer Negotiation Loop",
+      "bodyBlockId": "offer_seq",
+      "repeatCondition": {
+        "type": "binary_op",
+        "operator": "==",
+        "left": {
+          "type": "variable",
+          "variableName": "customerAccepted"
+        },
+        "right": {
+          "type": "literal",
+          "value": false
+        }
+      }
+    },
+    "offer_seq": {
+      "id": "offer_seq",
+      "type": "sequence",
+      "name": "Offer Round",
+      "orderedChildren": [
+        "calc_rate",
+        "present_offer",
+        "eval_response"
+      ]
+    },
+    "calc_rate": {
+      "id": "calc_rate",
+      "type": "task",
+      "name": "Calculate Offer Rate (5 to 9 percent)",
+      "role": "Loan Officer",
+      "taskType": "service"
+    },
+    "present_offer": {
+      "id": "present_offer",
+      "type": "task",
+      "name": "Present Rate to Customer",
+      "role": "Loan Officer",
+      "taskType": "user"
+    },
+    "eval_response": {
+      "id": "eval_response",
+      "type": "task",
+      "name": "Evaluate Customer Response",
+      "role": "Customer",
+      "taskType": "user"
+    },
+    "outcome_task": {
+      "id": "outcome_task",
+      "type": "task",
+      "name": "Finalize Negotiation Outcome",
+      "role": "Loan Officer",
+      "taskType": "service"
+    }
+  },
+  "assumptions": [
+    "At most 3 offers are permitted before cancellation.",
+    "Offer rates range between 5 and 9 percent."
+  ],
+  "modelingDecisions": [
+    {
+      "id": "dec_bank_1",
+      "choice": "Model offer repeats as business negotiation iterations rather than error rework",
+      "justification": "Customer refusal is normal commercial negotiation behavior.",
+      "affectedBlockIds": [
+        "negotiate_loop"
+      ],
+      "references": [
+        "The bank can make another offer while the three offer limit permits."
+      ]
+    }
+  ],
+  "researchBindingCandidate": {
+    "domain": "SimBank",
+    "roleMappings": {
+      "calc_rate": "intervention_decision",
+      "eval_response": "standard_service"
+    }
+  }
+}

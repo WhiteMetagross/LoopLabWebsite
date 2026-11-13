@@ -1,0 +1,137 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "ready",
+  "title": "Manufacturing Repair and Reinspection",
+  "description": "A part needing repair is assigned to standard or specialist repair followed by mandatory reinspection.",
+  "profile": "standard_looplab_v1",
+  "processId": "Process_SimFactory",
+  "rootBlockId": "root_seq",
+  "roles": [
+    "Repair Technician",
+    "Specialist Tech",
+    "Quality Inspector"
+  ],
+  "variables": [
+    {
+      "name": "repairsCount",
+      "type": "number",
+      "initialValue": 1
+    },
+    {
+      "name": "inspectionStatus",
+      "type": "string",
+      "initialValue": "needs_repair"
+    }
+  ],
+  "blocks": {
+    "root_seq": {
+      "id": "root_seq",
+      "type": "sequence",
+      "name": "Main Sequence",
+      "orderedChildren": [
+        "repair_repeat",
+        "pack_task"
+      ]
+    },
+    "repair_repeat": {
+      "id": "repair_repeat",
+      "type": "repeat",
+      "name": "Repair and Reinspect Loop",
+      "bodyBlockId": "cycle_seq",
+      "repeatCondition": {
+        "type": "binary_op",
+        "operator": "==",
+        "left": {
+          "type": "variable",
+          "variableName": "inspectionStatus"
+        },
+        "right": {
+          "type": "literal",
+          "value": "needs_repair"
+        }
+      }
+    },
+    "cycle_seq": {
+      "id": "cycle_seq",
+      "type": "sequence",
+      "name": "Cycle Sequence",
+      "orderedChildren": [
+        "repair_choice",
+        "reinspect_task"
+      ]
+    },
+    "repair_choice": {
+      "id": "repair_choice",
+      "type": "exclusive_choice",
+      "name": "Assign Repair Team",
+      "branches": [
+        {
+          "id": "b_std_rep",
+          "name": "Standard Repair Team",
+          "targetBlockId": "t_std_repair"
+        },
+        {
+          "id": "b_spec_rep",
+          "name": "Specialist Repair Team",
+          "targetBlockId": "t_spec_repair"
+        }
+      ],
+      "defaultBranchId": "b_std_rep"
+    },
+    "t_std_repair": {
+      "id": "t_std_repair",
+      "type": "task",
+      "name": "Execute Standard Repair",
+      "role": "Repair Technician",
+      "taskType": "user"
+    },
+    "t_spec_repair": {
+      "id": "t_spec_repair",
+      "type": "task",
+      "name": "Execute Specialist Repair",
+      "role": "Specialist Tech",
+      "taskType": "user"
+    },
+    "reinspect_task": {
+      "id": "reinspect_task",
+      "type": "task",
+      "name": "Reinspect Repaired Part",
+      "role": "Quality Inspector",
+      "taskType": "user"
+    },
+    "pack_task": {
+      "id": "pack_task",
+      "type": "task",
+      "name": "Package Passed Part",
+      "role": "Quality Inspector",
+      "taskType": "manual"
+    }
+  },
+  "assumptions": [
+    "Every repair must strictly be followed by reinspection before packing or another repair.",
+    "Tail queue metric evaluates the 8 longest waiting jobs in an 80 job batch."
+  ],
+  "modelingDecisions": [
+    {
+      "id": "dec_fac_1",
+      "choice": "Enforce mandatory reinspection after every repair iteration",
+      "justification": "Domain rules require reinspection milestone before packing or repeat repair.",
+      "affectedBlockIds": [
+        "reinspect_task",
+        "repair_repeat"
+      ],
+      "references": [
+        "Every further repair must follow reinspection."
+      ]
+    }
+  ],
+  "researchBindingCandidate": {
+    "domain": "SimFactory",
+    "roleMappings": {
+      "repair_choice": "intervention_decision",
+      "t_std_repair": "standard_service",
+      "t_spec_repair": "specialist_service",
+      "reinspect_task": "milestone"
+    }
+  }
+}

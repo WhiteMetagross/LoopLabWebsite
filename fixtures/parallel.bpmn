@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="Definitions_1"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_ParallelCheck" name="Parallel Order Processing" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_1" name="Start" />
+    <bpmn:userTask id="Task_recv_order" name="Receive Order" />
+    <bpmn:parallelGateway id="Gateway_ParaSplit_para_check" name="Concurrent Stock and Payment Verification" />
+    <bpmn:parallelGateway id="Gateway_ParaJoin_para_check" name="Parallel Join" />
+    <bpmn:userTask id="Task_stock_task" name="Verify Inventory Stock" />
+    <bpmn:serviceTask id="Task_pay_task" name="Verify Payment Authorization" />
+    <bpmn:task id="Task_ship_order" name="Ship Goods to Customer" />
+    <bpmn:endEvent id="EndEvent_Completed" name="Completed" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_recv_order" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_recv_order" targetRef="Gateway_ParaSplit_para_check" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Gateway_ParaSplit_para_check" targetRef="Task_stock_task" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_stock_task" targetRef="Gateway_ParaJoin_para_check" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Gateway_ParaSplit_para_check" targetRef="Task_pay_task" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_pay_task" targetRef="Gateway_ParaJoin_para_check" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Gateway_ParaJoin_para_check" targetRef="Task_ship_order" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Task_ship_order" targetRef="EndEvent_Completed" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_ParallelCheck">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_ParallelCheck" bpmnElement="Process_ParallelCheck">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="122" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_recv_order_di" bpmnElement="Task_recv_order">
+        <dc:Bounds x="250" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_ParaSplit_para_check_di" bpmnElement="Gateway_ParaSplit_para_check" isMarkerVisible="true">
+        <dc:Bounds x="435" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_ParaJoin_para_check_di" bpmnElement="Gateway_ParaJoin_para_check" isMarkerVisible="true">
+        <dc:Bounds x="755" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_stock_task_di" bpmnElement="Task_stock_task">
+        <dc:Bounds x="570" y="20" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_pay_task_di" bpmnElement="Task_pay_task">
+        <dc:Bounds x="570" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ship_order_di" bpmnElement="Task_ship_order">
+        <dc:Bounds x="890" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Completed_di" bpmnElement="EndEvent_Completed">
+        <dc:Bounds x="1082" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="158" y="180" />
+        <di:waypoint x="250" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="350" y="180" />
+        <di:waypoint x="435" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="485" y="180" />
+        <di:waypoint x="505" y="180" />
+        <di:waypoint x="505" y="60" />
+        <di:waypoint x="570" y="60" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="670" y="60" />
+        <di:waypoint x="690" y="60" />
+        <di:waypoint x="690" y="180" />
+        <di:waypoint x="755" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="485" y="180" />
+        <di:waypoint x="505" y="180" />
+        <di:waypoint x="505" y="300" />
+        <di:waypoint x="570" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="670" y="300" />
+        <di:waypoint x="690" y="300" />
+        <di:waypoint x="690" y="180" />
+        <di:waypoint x="755" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="805" y="180" />
+        <di:waypoint x="890" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="990" y="180" />
+        <di:waypoint x="1082" y="180" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

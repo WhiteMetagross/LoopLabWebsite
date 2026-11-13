@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "ready",
+  "title": "Incomplete Loan Review",
+  "description": "An application marked incomplete is routed to standard or specialist review.",
+  "profile": "standard_looplab_v1",
+  "processId": "Process_BPISim",
+  "rootBlockId": "root_seq",
+  "roles": [
+    "Reviewer",
+    "Senior Specialist"
+  ],
+  "variables": [
+    {
+      "name": "attempt",
+      "type": "number",
+      "initialValue": 1
+    },
+    {
+      "name": "reviewerType",
+      "type": "string",
+      "initialValue": "standard"
+    },
+    {
+      "name": "result",
+      "type": "string",
+      "initialValue": "incomplete"
+    }
+  ],
+  "blocks": {
+    "root_seq": {
+      "id": "root_seq",
+      "type": "sequence",
+      "name": "Main Review Sequence",
+      "orderedChildren": [
+        "review_repeat"
+      ]
+    },
+    "review_repeat": {
+      "id": "review_repeat",
+      "type": "repeat",
+      "name": "Incomplete Review Loop",
+      "bodyBlockId": "cycle_seq",
+      "repeatCondition": {
+        "type": "binary_op",
+        "operator": "==",
+        "left": {
+          "type": "variable",
+          "variableName": "result"
+        },
+        "right": {
+          "type": "literal",
+          "value": "incomplete"
+        }
+      }
+    },
+    "cycle_seq": {
+      "id": "cycle_seq",
+      "type": "sequence",
+      "name": "Cycle Sequence",
+      "orderedChildren": [
+        "marker_task",
+        "routing_choice",
+        "validate_task"
+      ]
+    },
+    "marker_task": {
+      "id": "marker_task",
+      "type": "task",
+      "name": "Record Incomplete Review Marker",
+      "role": "Reviewer",
+      "taskType": "service"
+    },
+    "routing_choice": {
+      "id": "routing_choice",
+      "type": "exclusive_choice",
+      "name": "Assign Reviewer at Marker",
+      "branches": [
+        {
+          "id": "b_std",
+          "name": "Standard Reviewer",
+          "targetBlockId": "t_std_rev"
+        },
+        {
+          "id": "b_spec",
+          "name": "Specialist Reviewer",
+          "targetBlockId": "t_spec_rev"
+        }
+      ],
+      "defaultBranchId": "b_std"
+    },
+    "t_std_rev": {
+      "id": "t_std_rev",
+      "type": "task",
+      "name": "Standard Review Handling",
+      "role": "Reviewer",
+      "taskType": "user"
+    },
+    "t_spec_rev": {
+      "id": "t_spec_rev",
+      "type": "task",
+      "name": "Specialist Review Handling",
+      "role": "Senior Specialist",
+      "taskType": "user"
+    },
+    "validate_task": {
+      "id": "validate_task",
+      "type": "task",
+      "name": "Validate Application File",
+      "role": "Reviewer",
+      "taskType": "user"
+    }
+  },
+  "assumptions": [
+    "Decision occurs at the incomplete marker rather than at service readiness.",
+    "Review activity accounts for only 0.68 percent of total elapsed time."
+  ],
+  "modelingDecisions": [
+    {
+      "id": "dec_bpi_1",
+      "choice": "Preserve marker timing before reviewer queue wait",
+      "justification": "Elapsed time is predominantly passive waiting outside the review decision.",
+      "affectedBlockIds": [
+        "marker_task",
+        "routing_choice"
+      ],
+      "references": [
+        "An application enters when it is marked incomplete."
+      ]
+    }
+  ],
+  "researchBindingCandidate": {
+    "domain": "BPISim",
+    "roleMappings": {
+      "routing_choice": "intervention_decision",
+      "t_std_rev": "standard_service",
+      "t_spec_rev": "specialist_service"
+    }
+  }
+}

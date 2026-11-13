@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="Definitions_1"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_SimClaims" name="Document Request Preparation" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_1" name="Start" />
+    <bpmn:exclusiveGateway id="Gateway_LoopEntry_repeat_block" name="Loop Entry" />
+    <bpmn:userTask id="Task_req_docs" name="Request Missing Documents" />
+    <bpmn:exclusiveGateway id="Gateway_Split_prep_choice" name="Select Preparation Team" />
+    <bpmn:exclusiveGateway id="Gateway_Merge_prep_choice" name="Merge" />
+    <bpmn:userTask id="Task_task_std_prep" name="Standard Document Preparation" />
+    <bpmn:userTask id="Task_task_spec_prep" name="Specialist Document Preparation" />
+    <bpmn:userTask id="Task_cust_response" name="Receive Customer Response" />
+    <bpmn:serviceTask id="Task_assess_outcome" name="Assess Claim Outcome" />
+    <bpmn:exclusiveGateway id="Gateway_RepeatCheck_repeat_block" name="Document Request Cycle" />
+    <bpmn:endEvent id="EndEvent_Completed" name="Completed" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Gateway_LoopEntry_repeat_block" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Gateway_LoopEntry_repeat_block" targetRef="Task_req_docs" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_req_docs" targetRef="Gateway_Split_prep_choice" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Gateway_Split_prep_choice" targetRef="Task_task_std_prep" name="Standard Preparation">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">team == &quot;standard&quot;</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_task_std_prep" targetRef="Gateway_Merge_prep_choice" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Gateway_Split_prep_choice" targetRef="Task_task_spec_prep" name="Specialist Preparation">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">team == &quot;specialist&quot;</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Task_task_spec_prep" targetRef="Gateway_Merge_prep_choice" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Gateway_Merge_prep_choice" targetRef="Task_cust_response" />
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Task_cust_response" targetRef="Task_assess_outcome" />
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Task_assess_outcome" targetRef="Gateway_RepeatCheck_repeat_block" />
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="Gateway_RepeatCheck_repeat_block" targetRef="Gateway_LoopEntry_repeat_block" name="Repeat">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">outcome == &quot;another_request&quot;</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Gateway_RepeatCheck_repeat_block" targetRef="EndEvent_Completed" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_SimClaims">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_SimClaims" bpmnElement="Process_SimClaims">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="122" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_LoopEntry_repeat_block_di" bpmnElement="Gateway_LoopEntry_repeat_block" isMarkerVisible="true">
+        <dc:Bounds x="275" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_req_docs_di" bpmnElement="Task_req_docs">
+        <dc:Bounds x="410" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Split_prep_choice_di" bpmnElement="Gateway_Split_prep_choice" isMarkerVisible="true">
+        <dc:Bounds x="595" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Merge_prep_choice_di" bpmnElement="Gateway_Merge_prep_choice" isMarkerVisible="true">
+        <dc:Bounds x="915" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_task_std_prep_di" bpmnElement="Task_task_std_prep">
+        <dc:Bounds x="730" y="20" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_task_spec_prep_di" bpmnElement="Task_task_spec_prep">
+        <dc:Bounds x="730" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_cust_response_di" bpmnElement="Task_cust_response">
+        <dc:Bounds x="1050" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_assess_outcome_di" bpmnElement="Task_assess_outcome">
+        <dc:Bounds x="1210" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_RepeatCheck_repeat_block_di" bpmnElement="Gateway_RepeatCheck_repeat_block" isMarkerVisible="true">
+        <dc:Bounds x="1395" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Completed_di" bpmnElement="EndEvent_Completed">
+        <dc:Bounds x="1562" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="158" y="180" />
+        <di:waypoint x="275" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="325" y="180" />
+        <di:waypoint x="410" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="510" y="180" />
+        <di:waypoint x="595" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="645" y="180" />
+        <di:waypoint x="665" y="180" />
+        <di:waypoint x="665" y="60" />
+        <di:waypoint x="730" y="60" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="830" y="60" />
+        <di:waypoint x="850" y="60" />
+        <di:waypoint x="850" y="180" />
+        <di:waypoint x="915" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="645" y="180" />
+        <di:waypoint x="665" y="180" />
+        <di:waypoint x="665" y="300" />
+        <di:waypoint x="730" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="830" y="300" />
+        <di:waypoint x="850" y="300" />
+        <di:waypoint x="850" y="180" />
+        <di:waypoint x="915" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="965" y="180" />
+        <di:waypoint x="1050" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="1150" y="180" />
+        <di:waypoint x="1210" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
+        <di:waypoint x="1310" y="180" />
+        <di:waypoint x="1395" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="1420" y="205" />
+        <di:waypoint x="1420" y="420" />
+        <di:waypoint x="300" y="420" />
+        <di:waypoint x="300" y="205" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
+        <di:waypoint x="1445" y="180" />
+        <di:waypoint x="1562" y="180" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

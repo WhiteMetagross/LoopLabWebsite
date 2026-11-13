@@ -1,0 +1,184 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "ready",
+  "title": "Document Request Preparation",
+  "description": "A claim requests missing documents and assigns preparation team before evaluation and potential rework.",
+  "profile": "standard_looplab_v1",
+  "processId": "Process_SimClaims",
+  "rootBlockId": "root_seq",
+  "roles": [
+    "Claims Adjuster",
+    "Preparation Specialist",
+    "Customer"
+  ],
+  "variables": [
+    {
+      "name": "attempt",
+      "type": "number",
+      "initialValue": 1
+    },
+    {
+      "name": "team",
+      "type": "string",
+      "initialValue": "standard"
+    },
+    {
+      "name": "outcome",
+      "type": "string",
+      "initialValue": "pending"
+    }
+  ],
+  "blocks": {
+    "root_seq": {
+      "id": "root_seq",
+      "type": "sequence",
+      "name": "Main Claims Sequence",
+      "orderedChildren": [
+        "repeat_block"
+      ]
+    },
+    "repeat_block": {
+      "id": "repeat_block",
+      "type": "repeat",
+      "name": "Document Request Cycle",
+      "bodyBlockId": "cycle_seq",
+      "repeatCondition": {
+        "type": "binary_op",
+        "operator": "==",
+        "left": {
+          "type": "variable",
+          "variableName": "outcome"
+        },
+        "right": {
+          "type": "literal",
+          "value": "another_request"
+        }
+      }
+    },
+    "cycle_seq": {
+      "id": "cycle_seq",
+      "type": "sequence",
+      "name": "Cycle Sequence",
+      "orderedChildren": [
+        "req_docs",
+        "prep_choice",
+        "cust_response",
+        "assess_outcome"
+      ]
+    },
+    "req_docs": {
+      "id": "req_docs",
+      "type": "task",
+      "name": "Request Missing Documents",
+      "role": "Claims Adjuster",
+      "taskType": "user"
+    },
+    "prep_choice": {
+      "id": "prep_choice",
+      "type": "exclusive_choice",
+      "name": "Select Preparation Team",
+      "branches": [
+        {
+          "id": "branch_std",
+          "name": "Standard Preparation",
+          "targetBlockId": "task_std_prep",
+          "condition": {
+            "type": "binary_op",
+            "operator": "==",
+            "left": {
+              "type": "variable",
+              "variableName": "team"
+            },
+            "right": {
+              "type": "literal",
+              "value": "standard"
+            }
+          }
+        },
+        {
+          "id": "branch_spec",
+          "name": "Specialist Preparation",
+          "targetBlockId": "task_spec_prep",
+          "condition": {
+            "type": "binary_op",
+            "operator": "==",
+            "left": {
+              "type": "variable",
+              "variableName": "team"
+            },
+            "right": {
+              "type": "literal",
+              "value": "specialist"
+            }
+          }
+        }
+      ],
+      "defaultBranchId": "branch_std"
+    },
+    "task_std_prep": {
+      "id": "task_std_prep",
+      "type": "task",
+      "name": "Standard Document Preparation",
+      "role": "Claims Adjuster",
+      "taskType": "user"
+    },
+    "task_spec_prep": {
+      "id": "task_spec_prep",
+      "type": "task",
+      "name": "Specialist Document Preparation",
+      "role": "Preparation Specialist",
+      "taskType": "user"
+    },
+    "cust_response": {
+      "id": "cust_response",
+      "type": "task",
+      "name": "Receive Customer Response",
+      "role": "Customer",
+      "taskType": "user"
+    },
+    "assess_outcome": {
+      "id": "assess_outcome",
+      "type": "task",
+      "name": "Assess Claim Outcome",
+      "role": "Claims Adjuster",
+      "taskType": "service"
+    }
+  },
+  "assumptions": [
+    "Initial request count starts at 1.",
+    "Specialist preparation shares reviewer capacity with other active claims."
+  ],
+  "modelingDecisions": [
+    {
+      "id": "dec_1",
+      "choice": "Use exclusive choice for preparation team routing",
+      "justification": "A claim requires either standard or specialist preparation at each document request attempt.",
+      "affectedBlockIds": [
+        "prep_choice"
+      ],
+      "references": [
+        "Choose standard or specialist preparation."
+      ]
+    },
+    {
+      "id": "dec_2",
+      "choice": "Model document return as explicit repeat cycle",
+      "justification": "Customer responses that require further documentation repeat the preparation episode.",
+      "affectedBlockIds": [
+        "repeat_block"
+      ],
+      "references": [
+        "Another request returns to preparation."
+      ]
+    }
+  ],
+  "researchBindingCandidate": {
+    "domain": "SimClaims",
+    "roleMappings": {
+      "task_std_prep": "standard_service",
+      "task_spec_prep": "specialist_service",
+      "prep_choice": "intervention_decision",
+      "repeat_block": "repeat_decision"
+    }
+  }
+}

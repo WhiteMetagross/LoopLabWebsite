@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "ready",
+  "title": "Parallel Order Processing",
+  "description": "Check stock and payment concurrently before shipping.",
+  "profile": "standard_looplab_v1",
+  "processId": "Process_ParallelCheck",
+  "rootBlockId": "root_seq",
+  "roles": [
+    "Warehouse",
+    "Finance",
+    "Shipping"
+  ],
+  "variables": [
+    {
+      "name": "stockReady",
+      "type": "boolean",
+      "initialValue": true
+    },
+    {
+      "name": "paymentReady",
+      "type": "boolean",
+      "initialValue": true
+    }
+  ],
+  "blocks": {
+    "root_seq": {
+      "id": "root_seq",
+      "type": "sequence",
+      "name": "Order Processing Sequence",
+      "orderedChildren": [
+        "recv_order",
+        "para_check",
+        "ship_order"
+      ]
+    },
+    "recv_order": {
+      "id": "recv_order",
+      "type": "task",
+      "name": "Receive Order",
+      "role": "Warehouse",
+      "taskType": "user"
+    },
+    "para_check": {
+      "id": "para_check",
+      "type": "parallel",
+      "name": "Concurrent Stock and Payment Verification",
+      "parallelBranches": [
+        {
+          "id": "b_stock",
+          "childBlockId": "stock_task"
+        },
+        {
+          "id": "b_pay",
+          "childBlockId": "pay_task"
+        }
+      ]
+    },
+    "stock_task": {
+      "id": "stock_task",
+      "type": "task",
+      "name": "Verify Inventory Stock",
+      "role": "Warehouse",
+      "taskType": "user"
+    },
+    "pay_task": {
+      "id": "pay_task",
+      "type": "task",
+      "name": "Verify Payment Authorization",
+      "role": "Finance",
+      "taskType": "service"
+    },
+    "ship_order": {
+      "id": "ship_order",
+      "type": "task",
+      "name": "Ship Goods to Customer",
+      "role": "Shipping",
+      "taskType": "manual"
+    }
+  },
+  "assumptions": [
+    "Both stock check and payment verification must complete before shipping."
+  ],
+  "modelingDecisions": [
+    {
+      "id": "dec_para_1",
+      "choice": "Use parallel gateway split and join",
+      "justification": "Both checks can occur independently and must synchronize before shipment.",
+      "affectedBlockIds": [
+        "para_check"
+      ],
+      "references": [
+        "Check stock and check payment in parallel."
+      ]
+    }
+  ]
+}
