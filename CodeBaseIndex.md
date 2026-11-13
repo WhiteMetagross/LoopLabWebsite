@@ -73,7 +73,7 @@ The compiler transforms high level structured process specifications into standa
 ## User Interface Components:
 
 - [Header.tsx](web/components/workspace/Header.tsx): Top navigation banner containing the custom circular loop logo, system health chips, and rainbow signature tab links.
-- [LoopLabLogo.tsx](web/components/workspace/LoopLabLogo.tsx): Standalone SVG vector logo featuring two curved arrows pointing to each other in a circle (one purple, one green) on a white circular background.
+- [LoopLabLogo.tsx](web/components/workspace/LoopLabLogo.tsx): Brand logo component rendering the GenAI generated PNG image (`web/public/looplab_logo.png`) featuring two curved loop arrows (purple and green) on a white circular background.
 - [BpmnCanvas.tsx](web/components/bpmn/BpmnCanvas.tsx): Dynamic client only wrapper for bpmn js avoiding server side rendering issues.
 - [BpmnCanvasInner.tsx](web/components/bpmn/BpmnCanvasInner.tsx): Modeler instance management, module unwrapping for token simulation ESM classes, zoom controls, and semantic node color styling.
 - [ComparisonCharts.tsx](web/components/charts/ComparisonCharts.tsx): Visual comparison bar chart rendering baseline control versus learned candidate with paired 95 percent confidence intervals and limit status pills.

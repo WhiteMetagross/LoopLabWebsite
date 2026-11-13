@@ -225,3 +225,4 @@ The script compares values in `web/public/research/paper_results.v1.json` agains
 - Camunda Modeler displays Not Installed: Install Camunda Modeler in the standard Program Files directory or set `CAMUNDA_MODELER_PATH` in `web/.env` pointing to your executable.
 - Python Simulation Service offline: Ensure `python services/research_api/main.py` is running on port 8000 before clicking Run Simulation on the Simulate page.
 - Port 3000 collision: If another application occupies port 3000, specify an alternative port such as `npm run dev -- -p 3001` or terminate the existing node process.
+

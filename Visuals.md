@@ -5,7 +5,8 @@ This document describes the visual structure, branding identity, page by page in
 ## Visual Identity and Brand Logo:
 
 - Logo Design:
-  The LoopLab logo consists of two circular loop arrows arranged in a circle pointing to each other in a continuous clockwise loop. The upper arrow is colored in purple (#8B5CF6) and the lower arrow is colored in green (#10B981). Both arrows sit centered on a crisp white circular background bordered by a subtle outline.
+  The LoopLab logo consists of two circular loop arrows arranged in a circle pointing to each other in a continuous clockwise loop. The upper arrow is colored in purple (#8B5CF6) and the lower arrow is colored in green (#10B981). Both arrows sit centered on a crisp white circular background. The logo is generated as a high resolution standalone PNG asset using Gemini GenAI.
+  Asset location: [web/public/looplab_logo.png](web/public/looplab_logo.png).
   Component reference: [LoopLabLogo.tsx](web/components/workspace/LoopLabLogo.tsx).
 
 - Rainbow Color Spectrum Theme:
