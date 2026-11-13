@@ -55,3 +55,4 @@ Write-Host "`n=========================================================" -Foregr
 Write-Host "LoopLab setup completed successfully." -ForegroundColor Green
 Write-Host "Run .\start.ps1 or start.bat to launch LoopLab." -ForegroundColor Cyan
 Write-Host "=========================================================" -ForegroundColor Cyan
+

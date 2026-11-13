@@ -2,6 +2,16 @@
 
 LoopLab is an interactive research demonstration workbench for studying, modeling, simulating, and evaluating learning based control policies in cyclic business processes. It accompanies the research paper titled "Learning Based Interventions for Rework and Repeated Decisions in Business Processes".
 
+## Visual Interface Overview:
+
+The platform features a multi color design system with horizontal BPMN 2.0 visualization, live queue simulation, and grounded policy explanations:
+
+![LoopLab Process Modeler](screenshots/model_desktop.png)
+
+![LoopLab Policy Optimization and Grounded Explanations](screenshots/optimize_explanation.png)
+
+For an in depth visual walkthrough across desktop, tablet, and mobile layouts, see [Visuals.md](Visuals.md).
+
 ## Research Problem and Motivation:
 
 Modern business processes frequently feature repeated activities. These cycles originate from customer documentation requests, quality assurance rework, iterative negotiations, and multi round approvals. Conventional process models often treat repeated decisions as independent episodes, ignoring queue congestion and state buildup across loops.
@@ -104,3 +114,9 @@ All seven tests validate overview card rendering, horizontal BPMN generation, to
 python scripts\verify_demo_results.py
 ```
 The script verifies exact equality between the web manifest and the repository raw experiment logs.
+
+## Documentation Index:
+
+- [InstallationAndSetup.md](InstallationAndSetup.md): Prerequisites, automated setup, and troubleshooting manual.
+- [CodeBaseIndex.md](CodeBaseIndex.md): Directory layout, contract interfaces, and architectural layer guide.
+- [Visuals.md](Visuals.md): Visual walkthrough, branding palette, and responsive viewport captures.

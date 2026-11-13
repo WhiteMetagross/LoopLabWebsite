@@ -27,3 +27,4 @@ Write-Host "`nLoopLab running." -ForegroundColor Green
 Write-Host "- Web interface: http://localhost:3000" -ForegroundColor Cyan
 Write-Host "- Research API:  http://localhost:8000" -ForegroundColor Cyan
 Write-Host "Close terminal windows to stop services." -ForegroundColor Gray
+

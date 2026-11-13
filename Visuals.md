@@ -6,7 +6,7 @@ This document describes the visual structure, branding identity, page by page in
 
 - Logo Design:
   The LoopLab logo consists of two circular loop arrows arranged in a circle pointing to each other in a continuous clockwise loop. The upper arrow is colored in purple (#8B5CF6) and the lower arrow is colored in green (#10B981). Both arrows sit centered on a crisp white circular background bordered by a subtle outline.
-  Component reference: [LoopLabLogo.tsx](web/components/workspace/LoopLabLogo.tsx)
+  Component reference: [LoopLabLogo.tsx](web/components/workspace/LoopLabLogo.tsx).
 
 - Rainbow Color Spectrum Theme:
   The interface employs a vibrant multi color rainbow spectrum to separate functional stages, status indicators, and research domains without visual monotony.
@@ -30,9 +30,10 @@ This document describes the visual structure, branding identity, page by page in
 
 ### 1. Overview Page (`/`):
 
-- Visual capture: [overview_desktop.png](screenshots/overview_desktop.png)
+![Overview Desktop Layout](screenshots/overview_desktop.png)
+
 - Header Banner:
-  Features the new circular loop logo, title, and live environment indicator chips for Gemini 2.5 Flash and Camunda Modeler.
+  Features the circular dual arrow loop logo, system title, and live environment indicator chips for Gemini 2.5 Flash and Camunda Modeler.
 - Hero Orientation Section:
   Presents the core research claim, title, and three direct action buttons: Open Process Modeler (gradient purple pink button), Explore Token Simulation (emerald button), and View Audited Results (amber button).
 - Interactive Research Workflow:
@@ -45,7 +46,8 @@ This document describes the visual structure, branding identity, page by page in
 
 ### 2. Process Modeler and Compiler Page (`/model`):
 
-- Visual capture: [model_desktop.png](screenshots/model_desktop.png)
+![Process Modeler Desktop Layout](screenshots/model_desktop.png)
+
 - Left Column (Prompt and Refinement):
   - Starter Examples picker dropdown allowing instantaneous loading of SimClaims, BPISim, SimFactory, SimBank, or Parallel verification models.
   - Natural Language Description textarea with Gemini 2.5 Flash badge and vibrant gradient generation button.
@@ -59,7 +61,8 @@ This document describes the visual structure, branding identity, page by page in
 
 ### 3. Simulation and Execution Playground (`/simulate`):
 
-- Visual capture: [simulate_trace.png](screenshots/simulate_trace.png)
+![Workload Simulation and Trace Replay Layout](screenshots/simulate_trace.png)
+
 - Mode Selector:
   Three view tabs styled with signature rainbow pills:
   - Browser Token Playback: Indigo pill.
@@ -77,7 +80,8 @@ This document describes the visual structure, branding identity, page by page in
 
 ### 4. Intervention Policy Optimization Page (`/optimize`):
 
-- Visual capture: [optimize_explanation.png](screenshots/optimize_explanation.png)
+![Intervention Policy Optimization and Grounded Explanation Layout](screenshots/optimize_explanation.png)
+
 - Left Column:
   Horizontal BPMN diagram with policy overlay highlighting controlled decision gateways and repeat loops.
 - Right Column:
@@ -88,7 +92,8 @@ This document describes the visual structure, branding identity, page by page in
 
 ### 5. Audited Research Results Page (`/results`):
 
-- Visual capture: [results_desktop.png](screenshots/results_desktop.png)
+![Audited Research Results Desktop Layout](screenshots/results_desktop.png)
+
 - Origin Switcher:
   Allows toggling between audited paper results and current session runs.
 - Table III (Focused Comparisons):
@@ -98,7 +103,8 @@ This document describes the visual structure, branding identity, page by page in
 
 ### 6. Research Documentation Page (`/research`):
 
-- Visual capture: [research_desktop.png](screenshots/research_desktop.png)
+![Research Documentation Desktop Layout](screenshots/research_desktop.png)
+
 - Four Simulation Environment Cards:
   Cards featuring distinct top color bars (Sky, Emerald, Amber, Purple) detailing setting, decision point, outcomes, mechanism, and constraints.
 - Data Provenance and Rights Section:
@@ -110,7 +116,8 @@ This document describes the visual structure, branding identity, page by page in
 
 ### Mobile Layout (390px by 844px):
 
-- Visual capture: [overview_mobile.png](screenshots/overview_mobile.png)
+![Mobile Responsive Overview Layout](screenshots/overview_mobile.png)
+
 - Header navigation tabs scroll smoothly along the horizontal axis with full touch targets.
 - Hero call to action buttons stack vertically for thumb friendly tapping.
 - Domain cards and workflow steps collapse into single column vertical cards.
@@ -118,26 +125,28 @@ This document describes the visual structure, branding identity, page by page in
 
 ### Tablet Layout (768px by 1024px):
 
-- Visual capture: [optimize_tablet.png](screenshots/optimize_tablet.png)
+![Tablet Responsive Optimization Layout](screenshots/optimize_tablet.png)
+
 - Canvas expands to occupy full tablet width, centering horizontal BPMN elements.
 - Comparison charts, secondary metric cards, and result explanation drawers stack cleanly below the diagram.
 
 ### Widescreen Desktop Layout (1920px by 1080px):
 
-- Visual capture: [results_widescreen.png](screenshots/results_widescreen.png)
+![Widescreen Desktop Results Layout](screenshots/results_widescreen.png)
+
 - Maximum container bounds prevent visual stretching on high resolution monitors.
 - Full width data tables display complete columns, numerical intervals, and status badges with balanced whitespace.
 
 ## Screenshot File Index:
 
-All full resolution screenshots captured during visual audits are saved in the project repository:
+All full resolution screenshots captured during visual audits are stored in the project repository using relative paths:
 
-- Overview desktop: [overview_desktop.png](screenshots/overview_desktop.png).
-- Process modeler desktop: [model_desktop.png](screenshots/model_desktop.png).
-- Workload simulation trace: [simulate_trace.png](screenshots/simulate_trace.png).
-- Policy optimization and explanation: [optimize_explanation.png](screenshots/optimize_explanation.png).
-- Results table desktop: [results_desktop.png](screenshots/results_desktop.png).
-- Research documentation desktop: [research_desktop.png](screenshots/research_desktop.png).
-- Mobile overview layout: [overview_mobile.png](screenshots/overview_mobile.png).
-- Tablet optimize layout: [optimize_tablet.png](screenshots/optimize_tablet.png).
-- Widescreen results layout: [results_widescreen.png](screenshots/results_widescreen.png).
+- Overview desktop: [screenshots/overview_desktop.png](screenshots/overview_desktop.png).
+- Process modeler desktop: [screenshots/model_desktop.png](screenshots/model_desktop.png).
+- Workload simulation trace: [screenshots/simulate_trace.png](screenshots/simulate_trace.png).
+- Policy optimization and explanation: [screenshots/optimize_explanation.png](screenshots/optimize_explanation.png).
+- Results table desktop: [screenshots/results_desktop.png](screenshots/results_desktop.png).
+- Research documentation desktop: [screenshots/research_desktop.png](screenshots/research_desktop.png).
+- Mobile overview layout: [screenshots/overview_mobile.png](screenshots/overview_mobile.png).
+- Tablet optimize layout: [screenshots/optimize_tablet.png](screenshots/optimize_tablet.png).
+- Widescreen results layout: [screenshots/results_widescreen.png](screenshots/results_widescreen.png).

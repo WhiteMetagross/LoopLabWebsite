@@ -22,3 +22,4 @@ echo - Web UI:       http://localhost:3000
 echo - Research API: http://localhost:8000
 echo Close the respective terminal windows to shut down services.
 echo =========================================================
+

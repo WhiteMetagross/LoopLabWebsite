@@ -60,3 +60,4 @@ echo LoopLab setup completed successfully.
 echo You can now run start.bat or ./start.ps1 to launch LoopLab.
 echo =========================================================
 pause
+
