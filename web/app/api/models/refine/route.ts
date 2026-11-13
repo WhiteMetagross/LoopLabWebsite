@@ -3,6 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 import { ProcessSpec } from "@/lib/contracts/processSpec";
 import { compileProcessSpec } from "@/lib/bpmn/compiler";
 import { validateProcessIR } from "@/lib/bpmn/validator";
+import { callGeminiWithRetry } from "@/lib/gemini/client";
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,12 +25,8 @@ export async function POST(req: NextRequest) {
 User change request: "${changeRequest}".
 Refine the ProcessSpec by applying the requested change while preserving unchanged semantics and stable IDs. Return strictly updated ProcessSpec JSON with changeSummary populated.`;
 
-    const res = await ai.models.generateContent({
-      model: modelName,
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-      },
+    const res = await callGeminiWithRetry(ai, modelName, prompt, {
+      responseMimeType: "application/json",
     });
 
     const parsedSpec = JSON.parse(res.text || "{}") as ProcessSpec;

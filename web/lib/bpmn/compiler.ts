@@ -57,6 +57,41 @@ function escapeXml(unsafe: string): string {
 }
 
 export function compileSpecToIR(spec: ProcessSpec): ProcessIR {
+  if (!spec) {
+    throw new Error("Invalid ProcessSpec: null or undefined specification.");
+  }
+
+  // Handle case where blocks is an array instead of an object map
+  if (Array.isArray(spec.blocks)) {
+    const blocksMap: Record<string, ControlBlock> = {};
+    for (const b of spec.blocks) {
+      if (b && (b as any).id) {
+        blocksMap[(b as any).id] = b;
+      }
+    }
+    spec.blocks = blocksMap;
+  }
+
+  if (!spec.blocks || typeof spec.blocks !== "object") {
+    spec.blocks = {};
+  }
+
+  // Ensure rootBlockId exists and points to a valid block
+  if (!spec.rootBlockId || !spec.blocks[spec.rootBlockId]) {
+    const blockIds = Object.keys(spec.blocks);
+    if (blockIds.length > 0) {
+      const childIds = new Set<string>();
+      for (const b of Object.values(spec.blocks)) {
+        b.orderedChildren?.forEach((c) => childIds.add(c));
+        b.branches?.forEach((br) => childIds.add(br.targetBlockId));
+        b.parallelBranches?.forEach((pb) => childIds.add(pb.childBlockId));
+        if (b.bodyBlockId) childIds.add(b.bodyBlockId);
+      }
+      const potentialRoots = blockIds.filter((id) => !childIds.has(id));
+      spec.rootBlockId = potentialRoots[0] || blockIds[0];
+    }
+  }
+
   const nodes: IRNode[] = [];
   const flows: IRFlow[] = [];
   const loopPaths: { entryNodeId: string; repeatNodeId: string; returnFlowId: string }[] = [];
@@ -73,6 +108,7 @@ export function compileSpecToIR(spec: ProcessSpec): ProcessIR {
 
   // Recursive or structured block compiler
   function compileBlock(blockId: string, entryNodeId: string): string {
+    if (!blockId || !spec.blocks) return entryNodeId;
     const block = spec.blocks[blockId];
     if (!block) return entryNodeId;
 
@@ -134,20 +170,20 @@ export function compileSpecToIR(spec: ProcessSpec): ProcessIR {
 
       const branches = block.branches || [];
       for (const branch of branches) {
+        if (!branch.targetBlockId) continue;
         const branchEntry = splitId;
+        const flowCountBefore = flows.length;
         const branchEnd = compileBlock(branch.targetBlockId, branchEntry);
 
-        // Update the flow from split to branch target with condition
-        const existingFlow = flows.find(
-          (f) => f.sourceRef === splitId && f.targetRef === branchEnd
-        );
-        if (existingFlow) {
-          existingFlow.name = sanitizeProseText(branch.name);
+        // Find the outgoing flow from splitId for this branch
+        const branchStartFlow = flows.slice(flowCountBefore).find((f) => f.sourceRef === splitId);
+        if (branchStartFlow) {
+          branchStartFlow.name = sanitizeProseText(branch.name || "");
           if (branch.condition) {
-            existingFlow.conditionExpression = formatExpression(branch.condition);
+            branchStartFlow.conditionExpression = formatExpression(branch.condition);
           }
           if (block.defaultBranchId === branch.id) {
-            existingFlow.isDefault = true;
+            branchStartFlow.isDefault = true;
           }
         }
 
@@ -186,6 +222,7 @@ export function compileSpecToIR(spec: ProcessSpec): ProcessIR {
 
       const branches = block.parallelBranches || [];
       for (const branch of branches) {
+        if (!branch.childBlockId) continue;
         const branchEnd = compileBlock(branch.childBlockId, splitId);
         flows.push({
           id: nextFlowId(),

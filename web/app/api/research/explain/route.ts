@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import * as fs from "fs";
 import * as path from "path";
+import { callGeminiWithRetry } from "@/lib/gemini/client";
 
 export async function POST(req: NextRequest) {
   try {
@@ -37,13 +38,9 @@ Explain the findings, tradeoffs, uncertainty, and operating limits adhering to t
   "uncertainty": string
 }`;
 
-      const res = await ai.models.generateContent({
-        model: modelName,
-        contents: prompt,
-        config: {
-          systemInstruction: systemPrompt,
-          responseMimeType: "application/json",
-        },
+      const res = await callGeminiWithRetry(ai, modelName, prompt, {
+        systemInstruction: systemPrompt,
+        responseMimeType: "application/json",
       });
 
       const explanation = JSON.parse(res.text || "{}");

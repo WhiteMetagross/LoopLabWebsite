@@ -30,3 +30,112 @@ When repairing a specification, use the host's validation diagnostics. Preserve 
 
 When refining a valid model, implement the requested semantic change and preserve unrelated behavior. Reference the supplied revision. Explain the material change in changeSummary. Update affected modelingDecisions and assumptions. Do not say the model is valid merely because you reviewed it. Validation status comes from host diagnostics.
 
+# ProcessSpec JSON Schema Definition:
+
+The returned response must strictly conform to the following JSON structure:
+
+```json
+{
+  "schemaVersion": "1.0.0",
+  "status": "ready",
+  "title": "Short descriptive process title",
+  "description": "One sentence summary of the process.",
+  "profile": "standard_looplab_v1",
+  "processId": "Process_UniqueName",
+  "rootBlockId": "root_seq",
+  "roles": ["Staff Role 1", "Staff Role 2"],
+  "variables": [
+    {
+      "name": "variable_name",
+      "type": "string",
+      "initialValue": "default_value"
+    }
+  ],
+  "blocks": {
+    "root_seq": {
+      "id": "root_seq",
+      "type": "sequence",
+      "name": "Main Process Sequence",
+      "orderedChildren": ["child_block_id_1", "child_block_id_2"]
+    },
+    "child_task": {
+      "id": "child_task",
+      "type": "task",
+      "name": "Activity Name",
+      "role": "Staff Role 1",
+      "taskType": "user"
+    },
+    "child_choice": {
+      "id": "child_choice",
+      "type": "exclusive_choice",
+      "name": "Decision Point Name",
+      "branches": [
+        {
+          "id": "branch_1",
+          "name": "Condition A",
+          "targetBlockId": "task_a",
+          "condition": {
+            "type": "binary_op",
+            "operator": "==",
+            "left": { "type": "variable", "variableName": "variable_name" },
+            "right": { "type": "literal", "value": "val_a" }
+          }
+        },
+        {
+          "id": "branch_2",
+          "name": "Default Condition B",
+          "targetBlockId": "task_b"
+        }
+      ],
+      "defaultBranchId": "branch_2"
+    },
+    "child_parallel": {
+      "id": "child_parallel",
+      "type": "parallel",
+      "name": "Concurrent Execution",
+      "parallelBranches": [
+        { "id": "pbranch_1", "childBlockId": "task_p1" },
+        { "id": "pbranch_2", "childBlockId": "task_p2" }
+      ]
+    },
+    "child_repeat": {
+      "id": "child_repeat",
+      "type": "repeat",
+      "name": "Repeat Cycle Name",
+      "bodyBlockId": "repeat_inner_seq",
+      "repeatCondition": {
+        "type": "binary_op",
+        "operator": "==",
+        "left": { "type": "variable", "variableName": "variable_name" },
+        "right": { "type": "literal", "value": "repeat_trigger" }
+      }
+    }
+  },
+  "assumptions": [
+    "Assumption statement ending in a period."
+  ],
+  "modelingDecisions": [
+    {
+      "id": "dec_1",
+      "choice": "Explicit architectural choice description.",
+      "justification": "Clear reasoning from prompt context.",
+      "affectedBlockIds": ["child_choice"],
+      "references": ["Relevant quotation from prompt."]
+    }
+  ],
+  "researchBindingCandidate": {
+    "domain": "SimClaims",
+    "roleMappings": {}
+  }
+}
+```
+
+Block Types Reference:
+- sequence: orderedChildren contains an array of block IDs executed in sequential order.
+- task: Atomic step with name, role, and taskType (user, service, or business_rule).
+- exclusive_choice: Exclusive XOR gateway. branches contains array of branch objects each with id, name, targetBlockId, and optional condition AST.
+- parallel: Parallel AND gateway. parallelBranches contains array of branch objects each with id and childBlockId.
+- repeat: Repeat loop. bodyBlockId is the block executed in each loop iteration. repeatCondition defines when the loop repeats back to loop entry.
+- terminal: Explicit completion with outcome description.
+
+

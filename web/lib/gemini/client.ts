@@ -1,56 +1,69 @@
 import { GoogleGenAI } from "@google/genai";
+import * as fs from "fs";
+import * as path from "path";
 import { ProcessSpec } from "../contracts/processSpec";
-import { compileProcessSpec, ProcessIR } from "../bpmn/compiler";
-import { Diagnostic, validateProcessIR } from "../bpmn/validator";
+import { compileProcessSpec } from "../bpmn/compiler";
+import { validateProcessIR, Diagnostic } from "../bpmn/validator";
+import { ProcessIR } from "../bpmn/compiler";
 
-const SYSTEM_INSTRUCTION = `You are the BPMN process designer for LoopLab. Create or refine a business process model from the user's description and the supplied ProcessSpec schema. Decide the supported activity structure, responsibilities, branches, concurrent work, repeat paths and outcomes.
+let SYSTEM_INSTRUCTION = `You are a strict BPMN compiler and business process architect.
+Your goal is to parse a natural language process description into a formal, structured ProcessSpec JSON according to the looplab-v1 profile.
+Return strictly valid JSON complying with the ProcessSpec schema.`;
 
-Return JSON adhering to ProcessSpec. Return only JSON with these keys:
-{
-  "schemaVersion": "1.0.0",
-  "status": "ready",
-  "title": string,
-  "description": string,
-  "profile": "standard_looplab_v1",
-  "processId": string,
-  "rootBlockId": string,
-  "roles": string[],
-  "variables": [{"name": string, "type": "boolean"|"number"|"string"|"enum", "initialValue": any}],
-  "blocks": {
-    "block_id": {
-      "id": string,
-      "type": "sequence" | "task" | "exclusive_choice" | "parallel" | "repeat" | "terminal",
-      "name": string,
-      "role": optional string,
-      "taskType": optional "user" | "service" | "business_rule" | "manual",
-      "orderedChildren": optional string[] (for sequence),
-      "branches": optional [{"id": string, "name": string, "targetBlockId": string, "condition": {"type": "literal"|"variable"|"binary_op", ...}}] (for exclusive_choice),
-      "defaultBranchId": optional string,
-      "parallelBranches": optional [{"id": string, "childBlockId": string}] (for parallel),
-      "bodyBlockId": optional string (for repeat),
-      "repeatCondition": optional {"type": "literal"|"variable"|"binary_op", ...} (for repeat),
-      "outcome": optional string (for terminal)
+try {
+  const promptPath = path.resolve(process.cwd(), "../prompts/process-generator.system.md");
+  if (fs.existsSync(promptPath)) {
+    SYSTEM_INSTRUCTION = fs.readFileSync(promptPath, "utf-8");
+  } else {
+    const localPromptPath = path.resolve(process.cwd(), "prompts/process-generator.system.md");
+    if (fs.existsSync(localPromptPath)) {
+      SYSTEM_INSTRUCTION = fs.readFileSync(localPromptPath, "utf-8");
     }
-  },
-  "assumptions": string[],
-  "modelingDecisions": [
-    {
-      "id": string,
-      "choice": string,
-      "justification": string,
-      "affectedBlockIds": string[],
-      "references": string[]
-    }
-  ],
-  "changeSummary": optional string,
-  "clarificationQuestions": optional string[],
-  "researchBindingCandidate": optional {
-    "domain": "SimClaims" | "BPISim" | "SimFactory" | "SimBank",
-    "roleMappings": {}
   }
+} catch (e) {
+  // Fall back to default inline instruction
 }
 
-Use simple technical English without emojis, em dashes, en dashes, or semicolons. Ensure the containment graph is acyclic.`;
+/**
+ * Execute Gemini call with exponential backoff for transient 503/429 spikes.
+ */
+export async function callGeminiWithRetry(
+  ai: GoogleGenAI,
+  modelName: string,
+  currentPrompt: string,
+  config?: any,
+  retries = 3
+): Promise<any> {
+  const reqConfig = config || {
+    systemInstruction: SYSTEM_INSTRUCTION,
+    responseMimeType: "application/json",
+  };
+  let delay = 1500;
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await ai.models.generateContent({
+        model: modelName,
+        contents: currentPrompt,
+        config: reqConfig,
+      });
+    } catch (err: any) {
+      const isTransient =
+        err?.status === 503 ||
+        err?.status === 429 ||
+        String(err).includes("503") ||
+        String(err).includes("429") ||
+        String(err).includes("high demand") ||
+        String(err).includes("RESOURCE_EXHAUSTED");
+
+      if (isTransient && i < retries - 1) {
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        delay *= 2;
+        continue;
+      }
+      throw err;
+    }
+  }
+}
 
 export interface GenerateResult {
   spec: ProcessSpec;
@@ -78,14 +91,7 @@ export async function generateProcessModel(
 
   while (attempts <= maxRepairs) {
     attempts++;
-    const response = await ai.models.generateContent({
-      model: modelName,
-      contents: currentPrompt,
-      config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
-        responseMimeType: "application/json",
-      },
-    });
+    const response = await callGeminiWithRetry(ai, modelName, currentPrompt);
 
     rawJson = response.text || "";
     try {
@@ -101,15 +107,17 @@ export async function generateProcessModel(
       // Repair prompt
       currentPrompt = `Original prompt: "${prompt}". Your prior specification had validation errors: ${errors
         .map((e) => e.message)
-        .join(" ")}. Please return a corrected ProcessSpec JSON.`;
+        .join(" ")}. Please return a corrected ProcessSpec JSON conforming strictly to schema.`;
     } catch (parseErr) {
+      console.error(`Gemini parse/compile attempt ${attempts} error:`, parseErr);
       if (attempts > maxRepairs) {
         throw new Error(`Failed to parse Gemini response after ${attempts} attempts: ${String(parseErr)}`);
       }
-      currentPrompt = `Original prompt: "${prompt}". Output was not valid JSON. Return strictly valid ProcessSpec JSON.`;
+      currentPrompt = `Original prompt: "${prompt}". The returned JSON failed compilation: ${String(
+        parseErr
+      )}. Please return strictly valid ProcessSpec JSON conforming to the schema with rootBlockId and blocks map.`;
     }
   }
 
   throw new Error("Generation reached maximum repair attempts.");
 }
-

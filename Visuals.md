@@ -60,6 +60,12 @@ This document describes the visual structure, branding identity, page by page in
   - Tabbed inspector with Rationale, Assumptions, and Validation tabs.
   - Decision cards featuring colored left accent borders, decision identifiers, justifications, cited input text, and interactive node highlight buttons.
 
+- Unique Oncology Trial Generation and Incremental Refinement:
+
+![Generated Unique Oncology Trial Model](screenshots/unique_prompt_generated.png)
+
+  - Demonstrates end to end generation of a multi stage clinical workflow from a complex natural language prompt featuring patient triage, repeat biomarker screening cycle, AI molecular analyzer protocol selection, parallel dosage preparation and infusion session scheduling, and incremental nurse verification refinement.
+
 ### 3. Simulation and Execution Playground (`/simulate`):
 
 ![Workload Simulation and Trace Replay Layout](screenshots/simulate_trace.png)
